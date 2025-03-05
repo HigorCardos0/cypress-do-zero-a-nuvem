@@ -141,7 +141,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
 
   it('Acessa a página da política de privacidade removendo o target e então clicando no link', () => {
     cy.contains('a', 'Política de Privacidade').invoke('removeAttr', 'target').click();
-    cy.get(elements.privacyPol.title).should('have.text', elements.privacyPol.header);
+    cy.get(elements.title).should('have.text', elements.privacyPol.header);
   });
 
   it('Exibe e oculta as mensagens de sucesso e erro usando .invoke()', () => {
