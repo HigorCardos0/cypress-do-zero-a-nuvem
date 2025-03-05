@@ -1,0 +1,14 @@
+/*                                                        ANOTAÇÕES
+
+Como utilizar alias com cypress
+
+ cy.get('#firstName').as('nameField').should('be.visible').type(firstName)
+                           ^ transformando o nome do elemento
+cy.get('@nameField').should('have.value', firstName);
+       ^ pegando o elemento a partir do nome que definimos
+                        
+
+  cy.get(locators.textField).type(feedback, {delay : 0});
+  to type instantly just add a dellay ant the time ^
+
+*/
