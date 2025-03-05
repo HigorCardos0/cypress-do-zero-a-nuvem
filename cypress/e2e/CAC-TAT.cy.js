@@ -179,7 +179,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     .should('include', 'CAC TAT');
   });
 
-  it.only('Achando o gato escondido e mudando o nome da aplicação', () => {
+  it('Achando o gato escondido e mudando o nome da aplicação', () => {
     cy.get('#cat').invoke('show').should('be.visible');
     cy.get(elements.title).invoke('text', 'CAT TAT');
   });
