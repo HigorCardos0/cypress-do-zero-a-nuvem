@@ -43,9 +43,10 @@ export const elements = {
     },
 
     privacyPol: {
-        title: '#title',
         header: 'CAC TAT - Política de Privacidade',
         pageName: 'Central de Atendimento ao Cliente TAT - Política de Privacidade',
         tat: 'Talking About Testing'
-    }
+    },
+
+    title: '#title'
 };

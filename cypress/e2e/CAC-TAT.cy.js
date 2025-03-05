@@ -8,23 +8,36 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   it('Verifica o titulo da pagina', () => {
     cy.title().should('contains','Central de Atendimento ao Cliente TAT');
   });
-
+  
+  Cypress._.times(3, () => {
   it('Preenche os campos obrigatórios e envia o formulário', () => {
+    cy.clock();
     cy.formPreenchido();
     cy.contains('button', 'Enviar').click();
 
     cy.get(elements.responses.successMsg).should('be.visible');
+    
+    cy.tick(3000);
+
+    cy.get(elements.responses.successMsg).should('not.be.visible');
+    });
   });
 
   it('Validando o Preenchimento do campo de feedback com um texto longo', () => {
+    cy.clock();
     cy.formPreenchido();
     cy.get(elements.fields.textField).clear().type(elements.usersInfo.longText, {delay : 0});
     cy.get(elements.buttons.sendButton).click();
 
     cy.get(elements.responses.successMsg).should('be.visible');
+
+    cy.tick(3000);
+
+    cy.get(elements.responses.successMsg).should('not.be.visible');
   });
 
   it('Exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', () => {
+    cy.clock();
     cy.preenchendoForm(elements.usersInfo.firstName,
                        elements.usersInfo.lastName,
                        elements.usersInfo.emailError,
@@ -33,6 +46,10 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get(elements.buttons.sendButton).click();
 
     cy.get(elements.responses.errorMsg).should('be.visible');
+
+    cy.tick(3000);
+
+    cy.get(elements.responses.errorMsg).should('not.be.visible');
   });
 
   it('Validando se o campo de telefone aceita apenas numeros', () => {
@@ -42,11 +59,16 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   });
 
   it('Exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', () => {
+    cy.clock();
     cy.formPreenchido();   
     cy.get(elements.checkBoxes.phoneCBox).check();
     cy.get(elements.buttons.sendButton).click();
 
     cy.get(elements.responses.errorMsg).should('be.visible');
+
+    cy.tick(3000);
+
+    cy.get(elements.responses.errorMsg).should('not.be.visible');
   });
 
   it('Preenche e limpa os campos nome, sobrenome, email e telefone', ()=> {
@@ -56,12 +78,17 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get(elements.fields.lastNameField).clear().should('be.empty');
     cy.get(elements.fields.emailField).clear().should('be.empty');
     cy.get(elements.fields.textField).clear().should('be.empty');
-  });
+});
 
   it('Exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios',() => {
+    cy.clock();
     cy.get(elements.buttons.sendButton).click();
     
     cy.get(elements.responses.errorMsg).should('be.visible');
+
+    cy.tick(3000);
+
+    cy.get(elements.responses.errorMsg).should('not.be.visible');
   });
 
   it('Seleciona um produto por seu texto na caixa de dropdown',() => {
@@ -115,5 +142,45 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   it('Acessa a página da política de privacidade removendo o target e então clicando no link', () => {
     cy.contains('a', 'Política de Privacidade').invoke('removeAttr', 'target').click();
     cy.get(elements.privacyPol.title).should('have.text', elements.privacyPol.header);
+  });
+
+  it('Exibe e oculta as mensagens de sucesso e erro usando .invoke()', () => {
+    cy.get(elements.responses.successMsg)
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      .invoke('hide')
+      .should('not.be.visible')
+    cy.get(elements.responses.errorMsg)
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible')
+  });
+
+  it('Preenche o campo da área de texto usando o comando invoke', () => {
+    cy.get(elements.fields.textField).invoke('val', elements.usersInfo.feedback)
+    .should('have.value',elements.usersInfo.feedback);
+  });
+
+  it('Faz uma requisição HTTP', () => {
+    cy.request('https://cac-tat-v3.s3.eu-central-1.amazonaws.com/index.html')
+    .as('getRequest')
+    .its('status')
+    .should('be.equal', 200)
+    cy.get('@getRequest')
+    .its('statusText')
+    .should('be.equal', 'OK')
+    cy.get('@getRequest')
+    .its('body')
+    .should('include', 'CAC TAT');
+  });
+
+  it.only('Achando o gato escondido e mudando o nome da aplicação', () => {
+    cy.get('#cat').invoke('show').should('be.visible');
+    cy.get(elements.title).invoke('text', 'CAT TAT');
   });
 });
